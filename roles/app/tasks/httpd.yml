@@ -1,0 +1,59 @@
+---
+- name: 'Apache HTTP Server (httpd) {{ httpd_version }}: Install dependency packages'
+  sudo: yes
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - build-essential
+    - libaprutil1-dev
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Download source'
+  get_url: "url=http://{{ httpd_mirror | default('mirrors.ukfast.co.uk/sites/ftp.apache.org') }}/httpd/httpd-{{ httpd_version }}.tar.gz dest=/usr/local/src/httpd-{{ httpd_version }}.tar.gz sha256sum={{ httpd_checksum }}"
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Extract source'
+  command: 'tar zxf httpd-{{ httpd_version }}.tar.gz'
+  args:
+    chdir:   /usr/local/src
+    creates: 'httpd-{{ httpd_version }}'
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Configure'
+  command: './configure --enable-ssl --enable-so'
+  args:
+    chdir: '/usr/local/src/httpd-{{ httpd_version }}'
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Make'
+  command: 'make -j2'
+  args:
+    chdir:  '/usr/local/src/httpd-{{ httpd_version }}'
+    creates: httpd
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Install'
+  sudo:    yes
+  command: 'make install'
+  args:
+    chdir:   '/usr/local/src/httpd-{{ httpd_version }}'
+    creates: /usr/local/apache2/bin/httpd
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Copy httpd init script'
+  sudo:    yes
+  copy:    src=httpd/init-httpd dest=/etc/init.d/httpd mode=0755
+
+- name:     'Apache HTTP Server (httpd) {{ httpd_version }}: Copy httpd.conf'
+  sudo:     yes
+  template: src=httpd/httpd.conf.j2 dest=/usr/local/apache2/conf/httpd.conf force=yes
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Directories'
+  sudo:    yes
+  file:    path='/usr/local/apache2/conf/{{ item }}' state=directory
+  with_items:
+    - sites-enabled
+    - sites-available
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Copy example config'
+  sudo:    yes
+  copy:    src=httpd/site-template.conf dest=/usr/local/apache2/conf/sites-available/site-template.conf
+
+- name:    'Apache HTTP Server (httpd) {{ httpd_version }}: Cleanup'
+  file:    'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+      - 'httpd-{{ httpd_version }}'
+      - 'httpd-{{ httpd_version }}.tar.gz'

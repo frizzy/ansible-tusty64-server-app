@@ -1,0 +1,9 @@
+[program:searchd]
+autostart       = true
+autorestart     = true
+command         = /usr/local/bin/searchd --nodetach
+directory       = /usr/local/etc
+redirect_stderr = true
+stdout_logfile  = /usr/local/var/log/supervisord/searchd.log
+user            = {{ user }}
+priority        = 666

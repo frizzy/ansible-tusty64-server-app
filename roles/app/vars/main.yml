@@ -1,0 +1,27 @@
+---
+
+haproxy_version:       1.5.10
+haproxy_version_major: 1.5
+haproxy_checksum:      090264c834477c290f6ad6da558731d50aede0800996742d15e870b9947fe517
+
+httpd_version:         2.4.10
+httpd_checksum:        ab62f3283de03126fbd509866d8e4fdc9317235b6fca2734ae18827271f9c1fe
+
+php_version:           5.6.5
+php_checksum:          c5ef4abaef8c1ea66dcfd5a075a2f357b666aff5c5b686fca7c78c1cfd64e996
+php_timezone:          UTC
+
+sphinx_version:        2.2.7-release
+sphinx_checksum:       613487b66f75a925d4bbe9f04e0b062bd45a8792319672351a80e18a0724c63d
+
+re2_download:          https://re2.googlecode.com/files/re2-20140304.tgz
+re2_checksum:          0bffd1a57de2f4b218ca0f77d8850bfd59c82944a98256c6edba25260e0196a7
+
+nginx_version:         1.6.2
+nginx_checksum:        b5608c2959d3e7ad09b20fc8f9e5bd4bc87b3bc8ba5936a513c04ed8f1391a18
+
+node_version:          0.10.36
+node_checksum:         b9d7d1d0294bce46686b13a05da6fc5b1e7743b597544aa888e8e64a9f178c81
+
+serf_version:          0.6.3
+serf_checksum:         320a7811809210e91d4603c74e526fc34d5a59b06e913b68f45d92bd82a46800

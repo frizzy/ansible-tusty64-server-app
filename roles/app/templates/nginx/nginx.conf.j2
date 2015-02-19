@@ -1,0 +1,20 @@
+user  {{ www_user }};
+worker_processes  1;
+
+pid       /var/run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    access_log off;
+    include       mime.types;
+    default_type  application/octet-stream;
+    sendfile        on;
+    keepalive_timeout  65;
+    #gzip  on;
+    proxy_buffer_size 16k;
+    proxy_buffers 4 16k;
+    include /usr/local/nginx/conf/sites-enabled/*.conf;
+}

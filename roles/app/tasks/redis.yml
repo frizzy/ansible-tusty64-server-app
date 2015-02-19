@@ -1,0 +1,73 @@
+---
+
+- name:       'Redis: sysctl entry'
+  sudo:       yes
+  sysctl:     name=vm.overcommit_memory value=1 state=present reload=yes
+
+- name:       'Redis: Create user'
+  sudo:       yes
+  user:       name=redis createhome=no
+
+- name:       'Redis: Set open files limit'
+  sudo:       yes
+  lineinfile: dest=/etc/security/limits.conf state=present line='redis           -       nofile          100032'
+
+- name:       'Redis: Download source'
+  get_url:    "url=http://download.redis.io/redis-stable.tar.gz dest=/usr/local/src/redis.tar.gz"
+
+- name:       'Redis: Extract source'
+  command:    'tar zxf redis.tar.gz'
+  args:
+    chdir:    /usr/local/src
+    creates:  'redis-stable'
+
+- name:       'Redis: Make'
+  command:    'make -j2'
+  args:
+    chdir:    /usr/local/src/redis-stable
+    creates:  src/redis-server
+
+- name:       'Redis: Install'
+  sudo:       yes
+  command:    'make install'
+  args:
+    chdir:    /usr/local/src/redis-stable
+    creates:  /usr/local/bin/redis-server
+
+- name:       'Redis: Create directory'
+  sudo:       yes
+  file:       path=/usr/local/var/data/redis state=directory
+
+- name:       'Redis: Set dicrectory ACL'
+  sudo:       yes
+  acl:        name=/usr/local/var/data/redis entity=redis etype=user permissions='rwx' state=present
+
+- name:       'Redis: Copy configuration file'
+  sudo:       yes
+  command:    'cp redis.conf /usr/local/etc'
+  args:
+    chdir:    /usr/local/src/redis-stable
+    creates:  /usr/local/etc/redis.conf
+
+- name:       'Redis: Config daemonize'
+  sudo:       yes
+  lineinfile: dest=/usr/local/etc/redis.conf state=present regexp='^daemonize no' line='daemonize yes'
+
+- name:       'Redis: Config loglevel'
+  sudo:       yes
+  lineinfile: dest=/usr/local/etc/redis.conf state=present regexp='^loglevel notice' line='loglevel warning'
+
+- name:       'Redis: Config directory'
+  sudo:       yes
+  lineinfile: dest=/usr/local/etc/redis.conf state=present regexp='^dir ./' line='dir /usr/local/var/data/redis'
+
+- name:       'Redis: Copy redis-server init script'
+  sudo:       yes
+  copy:       src=redis/init-redis-server dest=/etc/init.d/redis-server mode=0755
+
+# Cleanup
+- name:       'Redis: Cleanup'
+  file:       'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+      - redis.tar.gz
+      - redis-stable

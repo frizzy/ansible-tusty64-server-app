@@ -1,0 +1,48 @@
+---
+
+- include:       bin.yml
+
+- include:       tinyproxy.yml
+  sudo:          yes
+
+- include:       haproxy.yml
+
+- include:       docker.yml
+  sudo:          yes
+
+- include:       logrotate.yml
+  sudo:          yes
+
+- include:       supervisord.yml
+  sudo:          yes
+
+- include:       sphinx.yml
+
+- name:          'Apache HTTP Server (httpd): Get installed version'
+  shell:         "[[ -f /usr/local/apache2/bin/httpd ]] && /usr/local/apache2/bin/httpd -v | grep 'Server version' | sed -e 's/^.*Apache\\/\\([0-9\\.]*\\).*/\\1/' || echo 0"
+  register:      httpd_installed_version
+
+- include:       httpd.yml
+  when:          httpd_installed_version | version_compare(httpd_version, '>')
+
+- name:          'PHP: Get installed version'
+  shell:         "[[ -f /usr/local/php/bin/php ]] && /usr/local/php/bin/php -r 'echo phpversion();' || echo 0"
+  register:      php_installed_version
+
+- include:       php.yml
+  when:          php_installed_version | version_compare(php_version, '>')
+
+- include:       hhvm.yml
+  sudo:          yes
+
+- include:       composer.yml
+
+- include:       symfony2-bash-completion.yml
+
+- include:       redis.yml
+
+- include:       nginx.yml
+
+- include:       node.yml
+
+- include:       serf.yml

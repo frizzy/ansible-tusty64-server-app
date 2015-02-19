@@ -1,0 +1,16 @@
+#!/bin/bash
+ARGS=("$@")
+ARGS="${ARGS[@]:1:100}"
+ARGSUM=""
+[ -z "$ARGS" ] || ARGSUM="-`echo -n "$ARGS" | md5sum | sed -e 's/[ -]//g'`"
+[ -z "$1" ] &&  echo Argument 1 not defined && exit 1
+[ ! -x "$1" ] && echo Arguments 1 needs to be an execuateble file && exit 1
+INODE=$(ls -i $1 | sed -e 's/ .*//')
+PIDFILE="/tmp/$INODE$ARGSUM.pid"
+touch $PIDFILE
+read LASTPID < $PIDFILE
+if [ ! -z "$LASTPID" ] && ps -p $LASTPID > /dev/null; then
+   exit
+fi
+echo $$ > $PIDFILE
+$@

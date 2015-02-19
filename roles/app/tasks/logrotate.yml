@@ -1,0 +1,7 @@
+---
+
+- name: 'Logrotate: Copy cron.hourly script'
+  copy: src=logrotate/cron-hourly dest=/etc/cron.hourly/logrotate mode=0755
+
+- name: 'Logrotate: Create conf directory'
+  file: path=/usr/local/etc/logrotate.d state=directory

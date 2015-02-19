@@ -1,0 +1,12 @@
+/usr/local/var/log/searchd/searchd.log
+{
+    rotate 10
+    size 100M
+    copytruncate
+    compress
+    dateext
+    dateformat %Y-%m-%d-%s.
+    extension log
+    su {{ user }} {{ user }}
+    create 644 {{ user }} {{ user }}
+}

@@ -1,0 +1,60 @@
+---
+- name:       'Nginx: Install dependency packages'
+  sudo:       yes
+  apt:        pkg={{ item }} state=installed
+  with_items:
+    - build-essential
+    - libpcre3-dev
+
+- name:       'Nginx {{ nginx_version }}: Download source'
+  get_url:    "url=http://nginx.org/download/nginx-{{ nginx_version }}.tar.gz dest=/usr/local/src/nginx-{{ nginx_version }}.tar.gz sha256sum={{ nginx_checksum }}"
+
+- name:       'Nginx: Extract source'
+  command:    'tar zxf nginx-{{ nginx_version }}.tar.gz'
+  args:
+    chdir:    /usr/local/src
+    creates:  'nginx-{{ nginx_version }}'
+
+- name:       'Nginx: Configure'
+  command:    './configure --with-http_ssl_module --with-http_spdy_module'
+  args:
+    chdir:    /usr/local/src/nginx-{{ nginx_version }}
+    creates:  'objs'
+
+- name:       'Nginx: Make'
+  command:    'make -j2'
+  args:
+    chdir:    /usr/local/src/nginx-{{ nginx_version }}
+    creates:  'objs/nginx'
+
+- name:       'Nginx: Install'
+  sudo:       yes
+  command:    'make install'
+  args:
+    chdir:    /usr/local/src/nginx-{{ nginx_version }}
+    creates:  /usr/local/nginx/sbin/nginx
+
+- name:       'Nginx: Copy redis-server init script'
+  sudo:       yes
+  copy:       src=nginx/init-nginx dest=/etc/init.d/nginx mode=0755
+
+- name:       'Nginx: Copy nginx.conf'
+  sudo:       yes
+  template:   src=nginx/nginx.conf.j2 dest=/usr/local/nginx/conf/nginx.conf mode=0755 force=yes
+
+- name:       'Nginx: Directories'
+  sudo:       yes
+  file:       path='/usr/local/nginx/conf/{{ item }}' state=directory
+  with_items:
+    - sites-enabled
+    - sites-available
+
+- name:       'Nginx: Cleanup'
+  file:       'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+      - nginx-{{ nginx_version }}
+      - nginx-{{ nginx_version }}.tar.gz
+
+- name:       'Nginx: logrotate config'
+  sudo:       yes
+  template:   src=nginx/logrotate.conf.j2 dest=/usr/local/etc/logrotate.d/nginx.conf

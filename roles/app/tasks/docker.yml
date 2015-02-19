@@ -1,0 +1,13 @@
+---
+
+- name:           'Docker: apt key'
+  apt_key:        id=36A1D7869245C8950F966E92D8576A8BA88D21E9 keyserver=keyserver.ubuntu.com state=present
+
+- name:           'Docker: add apt repository'
+  apt_repository: repo='deb https://get.docker.io/ubuntu docker main' state=present
+
+- name:           'Docker: apt package cache'
+  apt:            update_cache=yes
+
+- name:           'Docker: install package'
+  apt:            pkg=lxc-docker state=installed

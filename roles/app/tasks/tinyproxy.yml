@@ -1,0 +1,4 @@
+---
+
+- name: 'Tinyproxy: Install package'
+  apt:  pkg=tinyproxy state=installed

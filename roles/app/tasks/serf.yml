@@ -1,0 +1,16 @@
+---
+
+- name:      'Serf {{ serf_version }}: Download binary'
+  get_url:   "url=https://dl.bintray.com/mitchellh/serf/{{ serf_version }}_linux_amd64.zip dest=/usr/local/src/{{ serf_version }}_linux_amd64.zip sha256sum={{ serf_checksum }}"
+
+- name:      'Serf {{ serf_version }}: Extract binary'
+  sudo:      yes
+  command:   unzip {{ serf_version }}_linux_amd64.zip -d /usr/local/bin
+  args:
+    chdir:   /usr/local/src
+    creates: /usr/local/bin/serf
+
+- name:      'Serf {{ serf_version }}: Cleanup'
+  file:      'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+    - '{{ serf_version }}_linux_amd64.zip'

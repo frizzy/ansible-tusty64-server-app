@@ -1,0 +1,60 @@
+---
+
+- name:       Update APT package cache
+  sudo:       yes
+  apt:        update_cache=yes
+
+- name:       Set postfix defaults
+  sudo:       yes
+  shell:      echo {{ item }} | debconf-set-selections
+  with_items:
+      - "postfix postfix/mailname string localhost"
+      - "postfix postfix/main_mailer_type string 'Local only'"
+
+- name:       Install packages
+  sudo:       yes
+  apt:        pkg={{ item }} state=installed
+  with_items:
+    - build-essential
+    - acl
+    - mdadm
+    - postfix
+    - bash-completion
+    - curl
+    - unzip
+    - vim-nox
+    - git
+    - subversion
+    - mercurial
+    - mysql-client-5.6
+    - openjdk-7-jdk
+    - ruby-sass
+    - parallel
+    - ntp
+    - screen
+
+- name:       Install AWS CLI tools
+  pip:        name=awscli
+  sudo:       yes
+
+- name:       Set write access to /usr/local/src
+  sudo:       yes
+  acl:        name=/usr/local/src entity='{{ user }}' etype=user permissions='rwx' state=present
+
+- name:       Add xterm-256color TERM evnironment variable to bash color enable
+  replace:    dest=/home/{{ user }}/.bashrc regexp='xterm\-color\)' replace='xterm-color|xterm-256color)'
+
+- name:       'Create .variables file'
+  template:   src=.variables.j2 dest='/home/{{ user }}/.variables'
+
+- name:
+  copy:       src=.screenrc dest=/home/{{ user }}/.screenrc
+
+- name:       'Add .variables to .bashrc'
+  lineinfile: dest='/home/{{ user }}/.bashrc' insertafter=EOF line='. $HOME/.variables'
+
+- name:       Add dummy cron entry
+  cron:       name="Dummy cron entry" special_time=reboot job="echo" user={{ user }}
+
+- name:       Set PATH in crontab
+  shell:      'echo "PATH=/usr/local/bin:/usr/bin:/bin" | crontab'

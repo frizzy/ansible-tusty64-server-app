@@ -1,0 +1,25 @@
+---
+
+- name:         'Supervisord: easy_install'
+  apt:          name=python-setuptools state=present
+
+- name:         'Supervisord: pip'
+  easy_install: name=pip
+
+- name:         'Supservisord: Install'
+  pip:          name=supervisor
+
+- name:         'Supervisord: Create supervisord.conf'
+  template:     src=supervisord/supervisord.conf.j2 dest=/usr/local/etc/supervisord.conf
+
+- name:         'Supervisord: Create supervisord defaults'
+  template:     src=supervisord/default.j2 dest=/etc/default/supervisord
+
+- name:         'Supervisord: Copy supervisord init script'
+  copy:         src=supervisord/init-supervisord dest=/etc/init.d/supervisord mode=0755
+
+- name:         'Supervisord: Directories'
+  file:         path='/usr/local/{{ item }}' state=directory
+  with_items:
+    - var/log/supervisord
+    - etc/supervisord.d

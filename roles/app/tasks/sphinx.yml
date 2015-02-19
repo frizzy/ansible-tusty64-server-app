@@ -1,0 +1,106 @@
+---
+- name: 'Sphinx {{ sphinx_version }}: Install dependency packages'
+  sudo: yes
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - build-essential
+    - libexpat1-dev
+    - libmysqlclient-dev
+    - postgresql-server-dev-all
+
+
+- name:    'Sphinx {{ sphinx_version }}: Download source'
+  get_url: "url=http://sphinxsearch.com/files/sphinx-{{ sphinx_version }}.tar.gz dest=/usr/local/src/sphinx-{{ sphinx_version }}.tar.gz sha256sum={{ sphinx_checksum }}"
+
+- name:    'Sphinx {{ sphinx_version }}: Extract source'
+  command: 'tar zxf sphinx-{{ sphinx_version }}.tar.gz'
+  args:
+    chdir:   /usr/local/src
+    creates: 'sphinx-{{ sphinx_version }}'
+
+- name:    'Sphinx {{ sphinx_version }}: Download Snowball source'
+  get_url: "url=http://snowball.tartarus.org/dist/libstemmer_c.tgz dest=/usr/local/src/libstemmer_c.tgz"
+
+- name:    'Sphinx {{ sphinx_version }}: Extract Snowball source'
+  command: 'tar zxf libstemmer_c.tgz'
+  args:
+    chdir:   /usr/local/src
+    creates: libstemmer_c
+
+- name:    'Sphinx {{ sphinx_version }}: Copy Snowball to Sphinx source'
+  shell:   'cp -r libstemmer_c/* sphinx-{{ sphinx_version }}/libstemmer_c/'
+  args:
+    chdir:   /usr/local/src
+    creates: 'sphinx-{{ sphinx_version }}/libstemmer_c/libstemmer'
+
+- name:    'Sphinx {{ sphinx_version }}: Download re2 source'
+  get_url: "url={{ re2_download }} dest=/usr/local/src/re2.tgz sha256sum={{ re2_checksum }}"
+
+- name:    'Sphinx {{ sphinx_version }}: Extract re2 source'
+  command: 'tar zxf re2.tgz'
+  args:
+    chdir:   /usr/local/src
+    creates: re2
+
+- name:    'Sphinx {{ sphinx_version }}: Make re2'
+  command: 'make -j2'
+  args:
+    chdir:   /usr/local/src/re2
+    creates: obj
+
+- name:    'Sphinx {{ sphinx_version }}: Install re2'
+  sudo:    yes
+  command: 'make install'
+  args:
+    chdir:   /usr/local/src/re2
+    creates: /usr/local/lib/libre2.a
+
+- name:    'Sphinx {{ sphinx_version }}: Configure'
+  command: './configure --enable-id64 --with-iconv --with-libstemmer --with-libexpat --with-re2 --with-mysql --with-pgsql'
+  args:
+    chdir: '/usr/local/src/sphinx-{{ sphinx_version }}'
+
+- name:    'Sphinx {{ sphinx_version }}: Make'
+  command: 'make -j2 chdir=/usr/local/src/sphinx-{{ sphinx_version }}'
+  args:
+    creates: src/searchd
+
+- name:    'Sphinx {{ sphinx_version }}: Install'
+  sudo:    yes
+  command: 'make install'
+  args:
+    chdir:   '/usr/local/src/sphinx-{{ sphinx_version }}'
+    creates: /usr/local/bin/searchd
+
+- name:    'Sphinx {{ sphinx_version }}: Directories'
+  sudo:    yes
+  file:    path='/usr/local/{{ item }}' state=directory owner='{{ user }}'
+  with_items:
+    - var/log/searchd
+    - var/run/searchd
+
+- name:    'Sphinx {{ sphinx_version }}: Cleanup'
+  file:    'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+    - 'libstemmer_c'
+    - 'libstemmer_c.tgz'
+    - 're2'
+    - 're2.tgz'
+    - 'sphinx-{{ sphinx_version }}'
+    - 'sphinx-{{ sphinx_version }}.tar.gz'
+
+- name:    'Sphinx {{ sphinx_version }}: Delete unused extras'
+  sudo:    yes
+  file:    'path=/usr/local/etc/{{ item }} state=absent'
+  with_items:
+    - example.sql
+    - sphinx.conf.dist
+    - sphinx-min.conf.dist
+
+- name:     'Sphinx {{ sphinx_version }}: Create supervisord conf'
+  sudo:     yes
+  template: src=sphinx/supervisord-searchd.conf.j2 dest=/usr/local/etc/supervisord.d/searchd.conf.dist
+
+- name:     'Sphinx {{ sphinx_version }}: Create logrotate conf'
+  sudo:     yes
+  template: src=sphinx/logrotate-searchd.conf.j2 dest=/usr/local/etc/logrotate.d/searchd.conf

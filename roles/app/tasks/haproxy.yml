@@ -1,0 +1,29 @@
+---
+
+- name:      'HAProxy {{ haproxy_version }}: Download source'
+  get_url:   url="http://www.haproxy.org/download/{{ haproxy_version_major }}/src/haproxy-{{ haproxy_version }}.tar.gz" dest="/usr/local/src/haproxy-{{ haproxy_version }}.tar.gz" sha256sum="{{ haproxy_checksum }}"
+
+- name:      'HAProxy {{ haproxy_version }}: Extract source'
+  command:   'tar zxf haproxy-{{ haproxy_version }}.tar.gz'
+  args:
+    chdir:   /usr/local/src
+    creates: 'haproxy-{{ haproxy_version }}'
+
+- name:      'HAProxy {{ haproxy_version }}: Make'
+  command:   'make -j2 TARGET=linux26'
+  args:
+    chdir:   '/usr/local/src/haproxy-{{ haproxy_version }}'
+    creates: haproxy
+
+- name:      'HAProxy {{ haproxy_version }}: Install'
+  sudo:      yes
+  command:   'make install'
+  args:
+    chdir:   '/usr/local/src/haproxy-{{ haproxy_version }}'
+    creates: /usr/local/sbin/haproxy
+
+- name:     'HAProxy {{ haproxy_version }}: Cleanup'
+  file:     'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+    - 'haproxy-{{ haproxy_version }}'
+    - 'haproxy-{{ haproxy_version }}.tar.gz'

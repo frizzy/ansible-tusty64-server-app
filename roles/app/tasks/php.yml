@@ -1,0 +1,115 @@
+---
+- name: 'PHP {{ php_version }}: Install dependency packages'
+  sudo: yes
+  apt: pkg={{ item }} state=installed
+  with_items:
+    - build-essential
+    - autoconf
+    - re2c
+    - bison
+    - libxml2-dev
+    - libssl-dev
+    - libcurl4-openssl-dev
+    - libbz2-dev
+    - libjpeg8-dev
+    - libpng12-dev
+    - libfreetype6-dev
+    - libicu-dev
+    - libmcrypt-dev
+    - libxslt1-dev
+    - libgmp-dev
+
+- name:      'PHP {{ php_version }}: Symlink gmp.h'
+  sudo:      yes
+  command:   'ln -s /usr/include/x86_64-linux-gnu/gmp.h /usr/include/gmp.h'
+  args:
+    creates: /usr/include/gmp.h
+
+- name:      'PHP {{ php_version }}: Download source'
+  get_url:   "url=http://{{ php_mirror_host | default('at1.php.net') }}/get/php-{{ php_version }}.tar.xz/from/this/mirror dest=/usr/local/src/php-{{ php_version }}.tar.xz sha256sum={{ php_checksum }}"
+
+- name:      'PHP {{ php_version }}: Extract source'
+  command:   'tar Jxf php-{{ php_version | quote }}.tar.xz'
+  args:
+    chdir:   /usr/local/src
+    creates: 'php-{{ php_version }}'
+
+- name:      'PHP {{ php_version }}: Copy configure script'
+  copy:      src=php/configure dest='/usr/local/src/php-{{ php_version }}/php-configure' mode=0755
+
+- name:      'PHP {{ php_version }}: Configure'
+  command:   './php-configure'
+  args:
+    chdir:   '/usr/local/src/php-{{ php_version }}'
+
+- name:      'PHP {{ php_version }}: Make'
+  command:   'make -j2'
+  args:
+    chdir:   '/usr/local/src/php-{{ php_version }}'
+    creates: sapi/cli/php
+
+- name:      'PHP {{ php_version }}: Install'
+  sudo:      yes
+  command:   'make install'
+  args:
+    chdir:   '/usr/local/src/php-{{ php_version }}'
+    creates: '/usr/local/php/bin/php'
+
+- name:      'PHP {{ php_version }}: Create bin symlinks'
+  sudo:      yes
+  file:      src='/usr/local/php/bin/{{ item }}' dest='/usr/local/bin/{{ item }}' state=link
+  with_items:
+    - php
+    - php-config
+    - php-cgi
+    - phpize
+    - pear
+    - peardev
+    - pecl
+    - phar
+    - phar.phar
+
+- name:     'PHP {{ php_version }}: Copy php.ini'
+  sudo:     yes
+  command:  "cp php.ini-{{ php_environment | default('development') }} /usr/local/php/lib/php.ini"
+  args:
+    chdir:   '/usr/local/src/php-{{ php_version }}'
+    creates: /usr/local/php/lib/php.ini
+
+- name:     'PHP {{ php_version }}: Set timezone'
+  sudo:     yes
+  replace:  dest=/usr/local/php/lib/php.ini regexp='.*date\.timezone\s*\=.*$' replace='date.timezone = {{ php_timezone }}'
+
+- name:     'PHP {{ php_version }}: Copy conf.d/*.ini files'
+  sudo:     yes
+  copy:     src=php/conf.d dest=/usr/local/php/lib force=yes
+
+- name:     'PHP {{ php_version }}: Copy php-fpm init script'
+  sudo:     yes
+  copy:     src=php/init-php-fpm dest=/etc/init.d/php-fpm mode=0755
+
+- name:     'PHP {{ php_version }}: Copy php-fpm.conf'
+  sudo:     yes
+  copy:     src=php/php-fpm.conf dest=/usr/local/php/etc/php-fpm.conf
+
+- name:     'PHP {{ php_version }}: Create pool.d directory'
+  sudo:     yes
+  file:     path=/usr/local/php/etc/pool.d state=directory
+
+- name:     'PHP {{ php_version }}: Copy pool.d/*.conf files'
+  sudo:     yes
+  template: src=php/pool.d/www.conf.j2 dest=/usr/local/php/etc/pool.d/www.conf
+
+- name:     'PHP {{ php_version }}: Cleanup'
+  file:     'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+    - 'php-{{ php_version }}'
+    - 'php-{{ php_version }}.tar.xz'
+
+- name:     'PHP {{ php_version }}: Delete unused extras'
+  sudo:     yes
+  file:     'path=/usr/local/php/etc/php-fpm.conf.default state=absent'
+
+- name:     'PHP {{ php_version }}: Install igbinary'
+  sudo:     yes
+  command:  pecl install igbinary

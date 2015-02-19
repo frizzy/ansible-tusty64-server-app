@@ -1,0 +1,39 @@
+#!/bin/bash
+
+./configure \
+--prefix=/usr/local/php \
+--with-config-file-scan-dir=/usr/local/php/lib/conf.d \
+--exec-prefix=/usr/local/php \
+--with-libdir=/lib/x86_64-linux-gnu \
+--with-apxs2=/usr/local/apache2/bin/apxs \
+--disable-debug \
+--enable-fpm \
+--enable-gd-native-ttf \
+--enable-inline-optimization \
+--enable-mbregex \
+--enable-mbstring \
+--enable-pcntl \
+--enable-sockets \
+--enable-sysvsem \
+--enable-sysvshm \
+--enable-sysvmsg \
+--enable-zip \
+--with-bz2 \
+--with-curl \
+--with-freetype-dir \
+--with-gd \
+--with-jpeg-dir \
+--with-mcrypt \
+--with-mhash \
+--with-mysql=mysqlnd \
+--with-mysqli=mysqlnd \
+--with-openssl \
+--with-pcre-regex \
+--with-pdo-mysql=mysqlnd \
+--with-png-dir \
+--with-xsl \
+--with-zlib \
+--enable-intl \
+--enable-bcmath \
+--with-gmp=/usr \
+--enable-opcache

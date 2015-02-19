@@ -1,0 +1,11 @@
+---
+- name:    HHVM apt key
+  apt_key: url=http://dl.hhvm.com/conf/hhvm.gpg.key state=present
+
+- name:    HHVM apt repository
+  apt_repository:
+    repo:  'deb http://dl.hhvm.com/ubuntu trusty main'
+    state: present
+
+- name:    HHVM install
+  apt:     pkg=hhvm state=installed

@@ -1,0 +1,13 @@
+---
+
+- name: Apply common configuration to all nodes
+  hosts: all
+  user: '{{ user }}'
+  roles:
+    - common
+
+- name: Configure application support
+  hosts: app
+  user: '{{ user }}'
+  roles:
+    - app

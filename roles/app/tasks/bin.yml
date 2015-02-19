@@ -1,0 +1,7 @@
+---
+
+- name: Create user bin directory
+  file: path=/home/{{ user }}/bin state=directory
+
+- name: Install lock script
+  copy: src=bin/lock dest=/home/{{ user }}/bin/lock mode=0755

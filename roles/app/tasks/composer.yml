@@ -1,0 +1,24 @@
+---
+
+- name:     'Composer: Install required packages'
+  sudo:     yes
+  apt:      pkg={{ item }} state=installed
+  with_items:
+    - curl
+    - git
+
+- name:     'Composer: Check if installed'
+  sudo:     yes
+  shell:    '[[ -f /usr/local/bin/composer ]] && echo yes || echo no'
+  register: composer_installed
+
+- name:     'Composer: Update'
+  sudo:     yes
+  command:  '/usr/local/bin/composer self-update'
+  when:     composer_installed == 'yes'
+
+- name:     'Composer: Install'
+  sudo:     yes
+  shell:   'curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer'
+  args:
+    creates: /usr/local/bin/composer

@@ -1,0 +1,35 @@
+# http://nodejs.org/dist/v0.10.30/node-v0.10.30.tar.gz
+
+- name:      'Node {{ node_version }}: Download source'
+  get_url:   "url=http://nodejs.org/dist/v{{ node_version }}/node-v{{ node_version }}.tar.gz dest=/usr/local/src/node-v{{ node_version }}.tar.gz sha256sum={{ node_checksum }}"
+
+- name:      'Node {{ node_version }}: Extract source'
+  command:   'tar zxf node-v{{ node_version }}.tar.gz'
+  args:
+    chdir:   /usr/local/src
+    creates: 'node-v{{ node_version }}'
+
+- name:      'Node {{ node_version }}: Configure'
+  command:   ./configure
+  args:
+    chdir:   '/usr/local/src/node-v{{ node_version }}'
+    creates: config.mk
+
+- name:      'Node {{ node_version }}: Make'
+  command:   make -j2
+  args:
+    chdir:   '/usr/local/src/node-v{{ node_version }}'
+    creates: out/Release/node
+
+- name:      'Node {{ node_version }}: Install'
+  sudo:      yes
+  command:   make install
+  args:
+    chdir:   '/usr/local/src/node-v{{ node_version }}'
+    creates: /usr/local/bin/node
+
+- name:      'Node {{ node_version }}: Cleanup'
+  file:      'path=/usr/local/src/{{ item }} state=absent'
+  with_items:
+    - 'node-v{{ node_version }}.tar.gz'
+    - 'node-v{{ node_version }}'
