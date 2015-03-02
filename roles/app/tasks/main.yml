@@ -45,4 +45,7 @@
 
 - include:       node.yml
 
+- include:       crossbar.yml
+  sudo:          yes
+
 - include:       serf.yml

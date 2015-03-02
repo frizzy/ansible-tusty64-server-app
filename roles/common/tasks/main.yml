@@ -2,7 +2,7 @@
 
 - name:       Update APT package cache
   sudo:       yes
-  apt:        update_cache=yes
+  apt:        update_cache=yes upgrade=yes
 
 - name:       Set postfix defaults
   sudo:       yes
