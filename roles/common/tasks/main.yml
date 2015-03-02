@@ -2,7 +2,7 @@
 
 - name:       Update APT package cache
   sudo:       yes
-  apt:        update_cache=yes
+  apt:        update_cache=yes upgrade=yes
 
 - name:       Set postfix defaults
   sudo:       yes
@@ -15,6 +15,8 @@
   sudo:       yes
   apt:        pkg={{ item }} state=installed
   with_items:
+    - python-setuptools
+    - python-dev
     - build-essential
     - acl
     - mdadm
@@ -32,6 +34,10 @@
     - parallel
     - ntp
     - screen
+
+- name:         Install pip
+  easy_install: name=pip
+  sudo:         yes
 
 - name:       Install AWS CLI tools
   pip:        name=awscli

@@ -1,0 +1,5 @@
+---
+
+- name:       Install crossbar.io
+  pip:        name=crossbar
+  sudo:       yes

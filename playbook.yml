@@ -2,12 +2,17 @@
 
 - name: Apply common configuration to all nodes
   hosts: all
-  user: '{{ user }}'
+  vars:
+      user:    '{{ ansible_ssh_user }}'
+      www_user: www-data
+      app_env: 'prod'
   roles:
     - common
 
 - name: Configure application support
   hosts: app
-  user: '{{ user }}'
+  vars:
+      user:    '{{ ansible_ssh_user }}'
+      www_user: www-data
   roles:
     - app
