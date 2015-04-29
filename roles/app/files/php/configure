@@ -17,6 +17,7 @@
 --enable-sysvsem \
 --enable-sysvshm \
 --enable-sysvmsg \
+--enable-soap \
 --enable-zip \
 --with-bz2 \
 --with-curl \
