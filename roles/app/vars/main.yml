@@ -7,12 +7,12 @@ haproxy_checksum:      8b5aa462988405f09c8a6169294b202d7f524a5450a02dd92e7c21668
 httpd_version:         2.4.12
 httpd_checksum:        ee1e6901485feab7384371dbdd91c40fcb1b5e3f75583bb0d387b90d8c4176c8
 
-php_version:           5.6.6
-php_checksum:          b963b2d45baeebeeb421c05ee60889e87971e3e27a4be873d265fee3250fde20
+php_version:           5.6.8
+php_checksum:          4c417387b88e100ca306adeda8051eb9fad93dae8da983f962dabf91a14b2b7b
 php_timezone:          UTC
 
-sphinx_version:        2.2.7-release
-sphinx_checksum:       613487b66f75a925d4bbe9f04e0b062bd45a8792319672351a80e18a0724c63d
+sphinx_version:        2.2.9-release
+sphinx_checksum:       79bcb9fca069ba630fd71fb40fba05bb16e19b475906fb6ae026334d50a6bf3a
 
 re2_download:          https://re2.googlecode.com/files/re2-20140304.tgz
 re2_checksum:          0bffd1a57de2f4b218ca0f77d8850bfd59c82944a98256c6edba25260e0196a7
