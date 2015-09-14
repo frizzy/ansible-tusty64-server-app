@@ -1,27 +1,27 @@
 ---
 
-haproxy_version:       1.5.11
+haproxy_version:       1.5.14
 haproxy_version_major: 1.5
-haproxy_checksum:      8b5aa462988405f09c8a6169294b202d7f524a5450a02dd92e7c216680f793bf
+haproxy_checksum:      9565dd38649064d0350a2883fa81ccfe92eb17dcda457ebdc01535e1ab0c8f99
 
-httpd_version:         2.4.12
-httpd_checksum:        ee1e6901485feab7384371dbdd91c40fcb1b5e3f75583bb0d387b90d8c4176c8
+httpd_version:         2.4.16
+httpd_checksum:        0ccddbaed295582aa1beace8e5ddb34f6ec03215ad550ae0b88fdd59f529e9e9
 
-php_version:           5.6.8
-php_checksum:          4c417387b88e100ca306adeda8051eb9fad93dae8da983f962dabf91a14b2b7b
+php_version:           5.6.13
+php_checksum:          c1f0837df20cd3bed149033924770deca3e7e2d18e2e7e81395096576f153fdc
 php_timezone:          UTC
 
-sphinx_version:        2.2.9-release
-sphinx_checksum:       79bcb9fca069ba630fd71fb40fba05bb16e19b475906fb6ae026334d50a6bf3a
+sphinx_version:        2.2.10-release
+sphinx_checksum:       054cb86e64bd48997d89386e1224d4405063d9857b2d7c33dc6cc1b9ef6df440
 
 re2_download:          https://re2.googlecode.com/files/re2-20140304.tgz
 re2_checksum:          0bffd1a57de2f4b218ca0f77d8850bfd59c82944a98256c6edba25260e0196a7
 
-nginx_version:         1.6.2
-nginx_checksum:        b5608c2959d3e7ad09b20fc8f9e5bd4bc87b3bc8ba5936a513c04ed8f1391a18
+nginx_version:         1.8.0
+nginx_checksum:        23cca1239990c818d8f6da118320c4979aadf5386deda691b1b7c2c96b9df3d5
 
-node_version:          0.12.0
-node_checksum:         9700e23af4e9b3643af48cef5f2ad20a1331ff531a12154eef2bfb0bb1682e32
+node_version:          4.0.0
+node_checksum:         e110e5a066f3a6fe565ede7dd66f3727384b9b5c5fbf46f8db723d726e2f5900
 
 serf_version:          0.6.4
 serf_checksum:         bdb2a60a37fbb46c1a498bbb1354e34c1951e3c5df8003b95f9d4019c4e37663
