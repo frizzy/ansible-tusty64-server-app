@@ -5,7 +5,7 @@ haproxy_version_major: 1.5
 haproxy_checksum:      9565dd38649064d0350a2883fa81ccfe92eb17dcda457ebdc01535e1ab0c8f99
 
 httpd_version:         2.4.16
-httpd_checksum:        0ccddbaed295582aa1beace8e5ddb34f6ec03215ad550ae0b88fdd59f529e9e9
+httpd_checksum:        2fc18017801944cfcfde76a24f16c1276c866c2a6e512ee895f566bef9368fae
 
 php_version:           5.6.13
 php_checksum:          c1f0837df20cd3bed149033924770deca3e7e2d18e2e7e81395096576f153fdc
