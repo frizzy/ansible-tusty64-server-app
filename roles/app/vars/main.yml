@@ -1,14 +1,14 @@
 ---
 
-haproxy_version:       1.5.14
-haproxy_version_major: 1.5
-haproxy_checksum:      9565dd38649064d0350a2883fa81ccfe92eb17dcda457ebdc01535e1ab0c8f99
+haproxy_version:       1.6.3
+haproxy_version_major: 1.6
+haproxy_checksum:      fd06b45054cde2c69cb3322dfdd8a4bcfc46eb9d0c4b36d20d3ea19d84e338a7
 
-httpd_version:         2.4.16
-httpd_checksum:        2fc18017801944cfcfde76a24f16c1276c866c2a6e512ee895f566bef9368fae
+httpd_version:         2.4.18
+httpd_checksum:        1c39b55108223ba197cae2d0bb81c180e4db19e23d177fba5910785de1ac5527
 
-php_version:           5.6.13
-php_checksum:          c1f0837df20cd3bed149033924770deca3e7e2d18e2e7e81395096576f153fdc
+php_version:           5.6.16
+php_checksum:          8ef43271d9bd8cc8f8d407d3ba569de9fa14a28985ae97c76085bb50d597de98
 php_timezone:          UTC
 
 sphinx_version:        2.2.10-release
