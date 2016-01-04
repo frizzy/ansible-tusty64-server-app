@@ -1,5 +1,11 @@
 ---
 
+- name:       'Crossbar : Install dependency packages'
+  sudo:       yes
+  apt:        pkg={{ item }} state=installed
+  with_items:
+    - libffi-dev
+
 - name:       Install crossbar.io
   pip:        name=crossbar
   sudo:       yes
