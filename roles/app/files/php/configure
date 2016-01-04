@@ -37,4 +37,5 @@
 --enable-intl \
 --enable-bcmath \
 --with-gmp=/usr \
---enable-opcache
+--enable-opcache \
+--enable-ftp
