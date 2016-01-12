@@ -34,6 +34,7 @@
     - parallel
     - ntp
     - screen
+    - sendmail
 
 - name:         Install pip
   easy_install: name=pip
@@ -41,6 +42,10 @@
 
 - name:       Install AWS CLI tools
   pip:        name=awscli
+  sudo:       yes
+
+- name:       Install Superlance
+  pip:        name=superlance state=latest
   sudo:       yes
 
 - name:       Set write access to /usr/local/src
