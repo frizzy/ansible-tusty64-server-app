@@ -1,7 +1,7 @@
 ---
 
 - name:      'Serf {{ serf_version }}: Download binary'
-  get_url:   "url=https://dl.bintray.com/mitchellh/serf/{{ serf_version }}_linux_amd64.zip dest=/usr/local/src/{{ serf_version }}_linux_amd64.zip sha256sum={{ serf_checksum }}"
+  get_url:   "url=https://releases.hashicorp.com/serf/{{ serf_version }}/serf_{{ serf_version }}_linux_amd64.zip dest=/usr/local/src/{{ serf_version }}_linux_amd64.zip sha256sum={{ serf_checksum }}"
 
 - name:      'Serf {{ serf_version }}: Extract binary'
   sudo:      yes

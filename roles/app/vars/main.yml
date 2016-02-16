@@ -23,5 +23,5 @@ nginx_checksum:        23cca1239990c818d8f6da118320c4979aadf5386deda691b1b7c2c96
 node_version:          4.0.0
 node_checksum:         e110e5a066f3a6fe565ede7dd66f3727384b9b5c5fbf46f8db723d726e2f5900
 
-serf_version:          0.6.4
-serf_checksum:         bdb2a60a37fbb46c1a498bbb1354e34c1951e3c5df8003b95f9d4019c4e37663
+serf_version:          0.7.0
+serf_checksum:         b239fdcd1c15fd926ff0cd10bc32a31330d1c74aba9e4d49ff83d5707ef1ba4b
