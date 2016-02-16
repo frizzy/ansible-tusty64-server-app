@@ -26,7 +26,7 @@
     creates: /usr/include/gmp.h
 
 - name:      'PHP {{ php_version }}: Download source'
-  get_url:   "url=http://{{ php_mirror_host | default('at1.php.net') }}/get/php-{{ php_version }}.tar.xz/from/this/mirror dest=/usr/local/src/php-{{ php_version }}.tar.xz sha256sum={{ php_checksum }}"
+  get_url:   "url=http://{{ php_mirror_host | default('uk1.php.net') }}/get/php-{{ php_version }}.tar.xz/from/this/mirror dest=/usr/local/src/php-{{ php_version }}.tar.xz sha256sum={{ php_checksum }}"
 
 - name:      'PHP {{ php_version }}: Extract source'
   command:   'tar Jxf php-{{ php_version | quote }}.tar.xz'
